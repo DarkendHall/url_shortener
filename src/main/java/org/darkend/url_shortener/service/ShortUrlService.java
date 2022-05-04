@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponents;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("HttpUrlsUsage")
 @Service
@@ -24,7 +25,12 @@ public class ShortUrlService {
     }
 
     public ShortUrl createShortUrl(Url originalUrl, UriComponents uriComponents) {
-        String generatedId = IdGenerator.generateId();
+        String generatedId;
+        do {
+            generatedId = IdGenerator.generateId();
+        } while (!repository.findById(generatedId)
+                .equals(Optional.empty()));
+
         ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(uriComponents, generatedId),
                 originalUrl.getUrl());
         validator.validate(shortUrl);
