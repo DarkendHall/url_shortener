@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
@@ -34,10 +34,10 @@ public class ShortUrlController {
     @ResponseBody
     @PostMapping("short")
     @ResponseStatus(HttpStatus.CREATED)
-    public ShortUrl createNewShortUrl(@RequestBody @Valid Url originalUrl, HttpServletResponse response) {
-        var uriComponents = ServletUriComponentsBuilder.fromCurrentRequest()
-                .build();
-        ShortUrl savedUrl = service.createShortUrl(originalUrl, uriComponents);
+    public ShortUrl createNewShortUrl(@RequestBody @Valid Url originalUrl, HttpServletResponse response,
+                                      HttpServletRequest request) {
+        var requestUri = request.getRemoteHost() + ":" + request.getLocalPort();
+        ShortUrl savedUrl = service.createShortUrl(originalUrl, requestUri);
         response.addHeader("Location", savedUrl.getShortenedUrl());
         return savedUrl;
     }
