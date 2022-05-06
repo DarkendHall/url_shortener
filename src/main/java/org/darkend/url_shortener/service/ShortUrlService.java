@@ -23,20 +23,20 @@ public class ShortUrlService {
         this.validator = validator;
     }
 
-    public ShortUrl createShortUrl(Url originalUrl, String requestUri) {
+    public ShortUrl createShortUrl(Url originalUrl, String hostUrl) {
         String generatedId;
         do {
             generatedId = IdGenerator.generateId();
         } while (!repository.findById(generatedId)
                 .equals(Optional.empty()));
 
-        ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(requestUri, generatedId), originalUrl.getUrl());
+        ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(hostUrl, generatedId), originalUrl.getUrl());
         validator.validate(shortUrl);
         return repository.save(shortUrl);
     }
 
-    private String generateShortUrl(String requestUri, String id) {
-        return "http://" + requestUri + "/s/" + id;
+    private String generateShortUrl(String hostUrl, String id) {
+        return "http://" + hostUrl + "/s/" + id;
     }
 
     public List<ShortUrl> getAllShortUrls() {
