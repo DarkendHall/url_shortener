@@ -1,7 +1,10 @@
 package org.darkend.url_shortener.entity;
 
+import io.micronaut.core.annotation.Introspected;
+
 import javax.validation.constraints.NotBlank;
 
+@Introspected
 public class Url {
 
     @NotBlank

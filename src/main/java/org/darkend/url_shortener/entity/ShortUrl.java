@@ -1,10 +1,13 @@
 package org.darkend.url_shortener.entity;
 
+import io.micronaut.core.annotation.Introspected;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 @Entity
+@Introspected
 public class ShortUrl {
 
     @Id
