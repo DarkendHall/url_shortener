@@ -20,7 +20,7 @@ public class ExceptionMessage {
 
     public ExceptionMessageData convert(HttpStatus status, String msg) {
         return new ExceptionMessageData(LocalDateTime.now(clock)
-                .format(dtf), status, msg);
+                .format(dtf), status.getCode(), msg);
     }
 
 }
