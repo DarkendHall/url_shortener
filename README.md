@@ -28,3 +28,10 @@ There are currently three branches which contain three different versions of the
 </div>
 
 </div>
+
+<div>
+    <h3>Run command:</h3>
+
+<code>docker run --name url_shortener_spring -d -p 8080:8080 -e DB_URL=localhost:3306/db -e HOST_URL=localhost:8080
+ghcr.io/darkendhall/url_shortener:spring-boot</code>
+</div>
