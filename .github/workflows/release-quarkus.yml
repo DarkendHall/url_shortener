@@ -1,4 +1,4 @@
-name: Create and publish a Docker image (Micronaut)
+name: Create and publish a Docker image (Quarkus)
 
 on:
   release:
