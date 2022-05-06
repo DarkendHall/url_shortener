@@ -1,4 +1,5 @@
 <div align="center">
+<div>
 <h1>URL Shortener</h1> 
 <p>This repository contains code to shorten URLs, it is a part of the final examination of the course "Webservices".<br>
 There are currently three branches which contain three different versions of the application.
@@ -34,4 +35,18 @@ There are currently three branches which contain three different versions of the
 
 <code>docker run --name url_shortener_spring -d -p 8080:8080 -e DB_URL=localhost:3306/db -e HOST_URL=localhost:8080
 ghcr.io/darkendhall/url_shortener:spring-boot</code>
+</div>
+
+<div>
+<h3>Quarkus Specifics:</h3>
+
+To package to a .jar file run the following command if you <b><u>HAVE</u></b> Maven installed on your machine:<code>mvn
+-B package</code>
+and then run <code>docker build -t image-name:version .</code>
+
+To package to a .jar file run the following command if you <b><u>DO NOT HAVE</u></b> Maven
+installed on your machine: <code>./mvnw -B package</code> and then run <code>docker build -t image-name:version .</code>
+
+</div>
+
 </div>
