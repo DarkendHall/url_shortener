@@ -3,7 +3,7 @@ name: Create and publish a Docker image (Micronaut)
 on:
   release:
     branches:
-      - micronaut
+      - quarkus
     types: [ created ]
 
 env:
