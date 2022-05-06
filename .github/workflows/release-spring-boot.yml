@@ -45,8 +45,5 @@ jobs:
         run: |
           echo "ACTOR_LC=${ACTOR,,}" >>${GITHUB_ENV}
 
-      - name: Tag docker image
-        run: docker image tag url_shortener ghcr.io/darkendhall/url_shortener:spring-boot
-
       - name: Push docker image
         run: docker push ghcr.io/darkendhall/url_shortener:spring-boot
