@@ -1,6 +1,8 @@
 micronaut:
   application:
-    name: url_shortener
+    name: url-shortener
+    instance.id:
+      ${random.int[1,99999]}
   server:
     port: 8080
 datasources:
