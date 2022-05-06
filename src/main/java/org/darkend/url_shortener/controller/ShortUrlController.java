@@ -2,6 +2,7 @@ package org.darkend.url_shortener.controller;
 
 import org.darkend.url_shortener.entity.ShortUrl;
 import org.darkend.url_shortener.entity.Url;
+import org.darkend.url_shortener.exception.EnvironmentVariableException;
 import org.darkend.url_shortener.service.ShortUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class ShortUrlController {
 
     private void checkHostUrl() {
         if (this.HOST_URL == null) {
-            throw new IllegalStateException("Environment variable 'HOST_URL' not set");
+            throw new EnvironmentVariableException("Environment variable 'HOST_URL' not set");
         }
     }
 }
