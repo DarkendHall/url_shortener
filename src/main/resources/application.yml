@@ -1,0 +1,21 @@
+micronaut:
+  application:
+    name: url_shortener
+datasources:
+  default:
+    url: jdbc:mysql://${DB_URL}
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+    schema-generate: create
+    dialect: MYSQL
+jpa.default.properties.hibernate.hbm2ddl.auto: update
+consul:
+  client:
+    defaultZone: ${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}
+    registration:
+      enabled: true
+netty:
+  default:
+    allocator:
+      max-order: 3

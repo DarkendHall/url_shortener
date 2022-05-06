@@ -1,19 +1,19 @@
 package org.darkend.url_shortener.service;
 
+import io.micronaut.context.annotation.Bean;
 import org.darkend.url_shortener.entity.ShortUrl;
 import org.darkend.url_shortener.entity.Url;
 import org.darkend.url_shortener.repository.ShortUrlRepository;
 import org.darkend.url_shortener.utility.IdGenerator;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponents;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("HttpUrlsUsage")
-@Service
+@Bean
 public class ShortUrlService {
 
     private final ShortUrlRepository repository;
@@ -24,25 +24,28 @@ public class ShortUrlService {
         this.validator = validator;
     }
 
-    public ShortUrl createShortUrl(Url originalUrl, UriComponents uriComponents) {
+    public ShortUrl createShortUrl(Url originalUrl, String s) {
         String generatedId;
         do {
             generatedId = IdGenerator.generateId();
         } while (!repository.findById(generatedId)
                 .equals(Optional.empty()));
 
-        ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(uriComponents, generatedId),
+        ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(s, generatedId),
                 originalUrl.getUrl());
         validator.validate(shortUrl);
         return repository.save(shortUrl);
     }
 
-    private String generateShortUrl(UriComponents uriComponents, String id) {
-        return "http://" + uriComponents.getHost() + ":" + uriComponents.getPort() + "/s/" + id;
+    private String generateShortUrl(String s, String id) {
+        return "http://" + s + "/s/" + id;
     }
 
     public List<ShortUrl> getAllShortUrls() {
-        return repository.findAll();
+        var iterableResult = repository.findAll();
+        List<ShortUrl> resultList = new ArrayList<>();
+        iterableResult.forEach(resultList::add);
+        return resultList;
     }
 
     public ShortUrl getShortUrl(String id) {

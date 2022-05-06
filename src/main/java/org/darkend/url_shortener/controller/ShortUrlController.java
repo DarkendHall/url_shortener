@@ -1,61 +1,60 @@
 package org.darkend.url_shortener.controller;
 
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.Post;
 import org.darkend.url_shortener.entity.ShortUrl;
 import org.darkend.url_shortener.entity.Url;
+import org.darkend.url_shortener.exception.EnvironmentVariableException;
 import org.darkend.url_shortener.service.ShortUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
-@RestController
-@RequestMapping
+@Controller
 public class ShortUrlController {
+
+    private final String HOST_URL;
 
     private final Logger logger = LoggerFactory.getLogger(ShortUrlController.class);
     private final ShortUrlService service;
 
     public ShortUrlController(ShortUrlService service) {
         this.service = service;
+        this.HOST_URL = System.getenv("HOST_URL");
+        checkValidHostUrl();
     }
 
-    @ResponseBody
-    @PostMapping("short")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ShortUrl createNewShortUrl(@RequestBody @Valid Url originalUrl, HttpServletResponse response) {
-        var uriComponents = ServletUriComponentsBuilder.fromCurrentRequest()
-                .build();
-        ShortUrl savedUrl = service.createShortUrl(originalUrl, uriComponents);
-        response.addHeader("Location", savedUrl.getShortenedUrl());
-        return savedUrl;
+    @Post("short")
+    public HttpResponse<ShortUrl> createNewShortUrl(@Body @Valid Url originalUrl) {
+        ShortUrl savedUrl = service.createShortUrl(originalUrl, HOST_URL);
+        return HttpResponse.created(savedUrl)
+                .header("Location", savedUrl.getShortenedUrl());
     }
 
-    @ResponseBody
-    @GetMapping("short")
+    @Get("short")
     public List<ShortUrl> getAllShortUrls() {
         return service.getAllShortUrls();
     }
 
-    @GetMapping("s/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
-    public void getShortUrl(@PathVariable String id, HttpServletResponse response) {
+    @Get("s/{id}")
+    public HttpResponse<Void> getShortUrl(@PathVariable String id) {
         logger.debug("Received GET request, getting redirect url");
         var normalUrl = service.getShortUrl(id)
                 .getNormalUrl();
         logger.debug("Redirect gotten");
         logger.debug("Starting redirect");
-        response.addHeader("Location", normalUrl);
+        return HttpResponse.redirect(URI.create(normalUrl));
+    }
+
+    private void checkValidHostUrl() {
+        if (this.HOST_URL == null)
+            throw new EnvironmentVariableException("HOST_URL environment variable not set");
     }
 }
