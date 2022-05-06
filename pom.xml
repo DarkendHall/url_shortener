@@ -88,6 +88,10 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>io.micronaut.beanvalidation</groupId>
+            <artifactId>micronaut-hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.micronaut.data</groupId>
             <artifactId>micronaut-data-jdbc</artifactId>
             <scope>compile</scope>
