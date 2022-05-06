@@ -41,9 +41,5 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/darkendhall/url_shortener:spring-boot .
 
-      - name: Set ACTOR_LC environment variable
-        run: |
-          echo "ACTOR_LC=${ACTOR,,}" >>${GITHUB_ENV}
-
       - name: Push Docker image
         run: docker push ghcr.io/darkendhall/url_shortener:spring-boot
