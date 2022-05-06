@@ -6,3 +6,4 @@ There are currently two branches which contain two versions of the application.
 
 - The main branch contains a Spring Boot version.
 - The quarkus branch contains a Quarkus version.
+- The micronaut branch contains a Micronaut version.
