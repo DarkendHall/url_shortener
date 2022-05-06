@@ -7,8 +7,8 @@ import javax.validation.constraints.NotBlank;
 public class Url {
 
     @NotBlank
-    @URL(regexp = "https?:\\/\\/(www\\.[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,6}$)?([-a-zA-Z0-9@:%" +
-            "._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\.[a-zA-Z0-9()]{2,3})?$)?")
+    @URL(regexp = "https?:\\/\\/(www\\.[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,6}(\\/.[a-zA-Z0-9/]*)?)?" +
+            "([a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\.[a-zA-Z0-9()]{2,3})?([a-zA-Z0-9/]*))?")
     private String url;
 
     public Url() {
