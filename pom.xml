@@ -73,6 +73,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>url_shortener</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
