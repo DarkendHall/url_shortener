@@ -38,9 +38,9 @@ ghcr.io/darkendhall/url_shortener:spring-boot</code>
 </div>
 
 <div>
-<h3>Quarkus Specifics:</h3>
+<h3>Spring Boot Specifics:</h3>
 
-To package to a .jar file run the following command if you <b><u>HAVE</u></b> Maven installed on your machine:<code>mvn
+To package to a .jar file run the following command if you <b><u>HAVE</u></b> Maven installed on your machine: <code>mvn
 -B package</code>
 and then run <code>docker build -t image-name:version .</code>
 
