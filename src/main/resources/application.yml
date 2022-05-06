@@ -2,7 +2,7 @@ micronaut:
   application:
     name: url_shortener
   server:
-    port: ${SERVER_PORT:8080}
+    port: 8080
 datasources:
   default:
     url: jdbc:mysql://${DB_URL}
