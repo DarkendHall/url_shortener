@@ -41,13 +41,13 @@ There are currently three branches which contain three different versions of the
 To package to native image and create a Docker image run the following command if you <b><u>HAVE</u></b> Maven installed
 on your
 machine:<br>
-<code>mvn clean package --define quarkus.container-image.build=true -Dnative --define
+<code>mvn -B package -Pnative --define quarkus.container-image.build=true --define
 quarkus.native.container-build=true</code>
 
 To package to native image and create a Docker image run the following command if you <b><u>DO NOT HAVE</u></b> Maven
 installed on
 your machine:<br>
-<code>./mvnw clean package --define quarkus.container-image.build=true -Dnative --define
+<code>./mvnw -B package -Pnative --define quarkus.container-image.build=true --define
 quarkus.native.container-build=true</code>
 
 </div>
