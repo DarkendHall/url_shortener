@@ -33,6 +33,13 @@ There are currently three branches which contain three different versions of the
     <h2>Micronaut Specifics</h2>
 </div>
 
+<div>
+    <h3>Run command:</h3>
+
+<code>docker run --name url_shortener_micronaut -d -p 8080:8080 -e DB_URL=localhost:3306/db -e HOST_URL=localhost:8080
+-e CONSUL_HOST=localhost -e CONSUL_PORT=8500 ghcr.io/darkendhall/url_shortener:micronaut</code>
+</div>
+
 ### Environment Variables
 
 <div style="display: inline-block;">
@@ -54,5 +61,7 @@ installed on your machine: <br> <code>./mvnw -B package -Dpackaging=docker-nativ
 </p>
 
 </div>
+
+
 
 </div>
