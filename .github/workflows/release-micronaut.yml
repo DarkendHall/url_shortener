@@ -38,10 +38,6 @@ jobs:
           username: ${{ env.ACTOR }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set ACTOR_LC environment variable
-        run: |
-          echo "ACTOR_LC=${ACTOR,,}" >>${GITHUB_ENV}
-
       - name: Tag Docker image
         run: docker image tag url_shortener ghcr.io/darkendhall/url_shortener:micronaut
 
