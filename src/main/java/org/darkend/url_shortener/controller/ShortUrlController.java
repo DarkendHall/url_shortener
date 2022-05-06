@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -24,20 +23,22 @@ import java.util.List;
 @RequestMapping
 public class ShortUrlController {
 
+    private final String HOST_URL;
+
     private final Logger logger = LoggerFactory.getLogger(ShortUrlController.class);
     private final ShortUrlService service;
 
     public ShortUrlController(ShortUrlService service) {
         this.service = service;
+        this.HOST_URL = System.getenv("HOST_URL");
+        checkValidHost();
     }
 
     @ResponseBody
     @PostMapping("short")
     @ResponseStatus(HttpStatus.CREATED)
     public ShortUrl createNewShortUrl(@RequestBody @Valid Url originalUrl, HttpServletResponse response) {
-        var uriComponents = ServletUriComponentsBuilder.fromCurrentRequest()
-                .build();
-        ShortUrl savedUrl = service.createShortUrl(originalUrl, uriComponents);
+        ShortUrl savedUrl = service.createShortUrl(originalUrl, HOST_URL);
         response.addHeader("Location", savedUrl.getShortenedUrl());
         return savedUrl;
     }
@@ -57,5 +58,10 @@ public class ShortUrlController {
         logger.debug("Redirect gotten");
         logger.debug("Starting redirect");
         response.addHeader("Location", normalUrl);
+    }
+
+    private void checkValidHost() {
+        if (this.HOST_URL == null)
+            throw new IllegalStateException("Environment variable HOST_URL is not set");
     }
 }

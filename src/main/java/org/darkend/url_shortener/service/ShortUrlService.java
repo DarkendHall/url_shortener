@@ -5,7 +5,6 @@ import org.darkend.url_shortener.entity.Url;
 import org.darkend.url_shortener.repository.ShortUrlRepository;
 import org.darkend.url_shortener.utility.IdGenerator;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponents;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
@@ -24,21 +23,21 @@ public class ShortUrlService {
         this.validator = validator;
     }
 
-    public ShortUrl createShortUrl(Url originalUrl, UriComponents uriComponents) {
+    public ShortUrl createShortUrl(Url originalUrl, String hostUrl) {
         String generatedId;
         do {
             generatedId = IdGenerator.generateId();
         } while (!repository.findById(generatedId)
                 .equals(Optional.empty()));
 
-        ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(uriComponents, generatedId),
+        ShortUrl shortUrl = new ShortUrl(generatedId, generateShortUrl(hostUrl, generatedId),
                 originalUrl.getUrl());
         validator.validate(shortUrl);
         return repository.save(shortUrl);
     }
 
-    private String generateShortUrl(UriComponents uriComponents, String id) {
-        return "http://" + uriComponents.getHost() + ":" + uriComponents.getPort() + "/s/" + id;
+    private String generateShortUrl(String hostUrl, String id) {
+        return "http://" + hostUrl + "/s/" + id;
     }
 
     public List<ShortUrl> getAllShortUrls() {
