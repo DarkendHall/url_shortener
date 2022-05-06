@@ -20,7 +20,7 @@
         <release.version>17</release.version>
         <micronaut.version>3.4.2</micronaut.version>
         <micronaut.data.version>3.3.0</micronaut.data.version>
-        <exec.mainClass>org.darkend.Application</exec.mainClass>
+        <exec.mainClass>org.darkend.url_shortener.Application</exec.mainClass>
         <micronaut.runtime>netty</micronaut.runtime>
     </properties>
 
@@ -85,11 +85,6 @@
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-runtime</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.micronaut.beanvalidation</groupId>
-            <artifactId>micronaut-hibernate-validator</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
