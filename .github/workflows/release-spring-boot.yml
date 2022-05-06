@@ -39,7 +39,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build ghcr.io/darkendhall/url_shortener:spring-boot .
+        run: docker build -t ghcr.io/darkendhall/url_shortener:spring-boot .
 
       - name: Set ACTOR_LC environment variable
         run: |
