@@ -8,8 +8,8 @@ import java.util.Objects;
 public class Url {
 
     @NotBlank
-    @URL(regexp = "https?:\\/\\/(www\\.[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\/.[a-zA-Z0-9/]*)?)?" +
-            "([a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\.[a-zA-Z0-9()]{2,3})?([a-zA-Z0-9/]*))?")
+    @URL(regexp = "https?:\\/\\/(www\\.[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\/.(\\/[\\w\\W]*)]*)?)?" +
+            "([a-zA-Z0-9@:%._\\\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\.[a-zA-Z0-9()]{2,3})?((\\/[\\w\\W]*)*))?")
     private String url;
 
     public Url() {
