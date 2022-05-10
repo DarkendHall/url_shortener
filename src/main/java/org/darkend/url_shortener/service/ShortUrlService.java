@@ -18,16 +18,18 @@ public class ShortUrlService {
 
     private final ShortUrlRepository repository;
     private final Validator validator;
+    private final IdGenerator idGenerator;
 
-    public ShortUrlService(ShortUrlRepository repository, Validator validator) {
+    public ShortUrlService(ShortUrlRepository repository, Validator validator, IdGenerator idGenerator) {
         this.repository = repository;
         this.validator = validator;
+        this.idGenerator = idGenerator;
     }
 
     public ShortUrl createShortUrl(Url originalUrl, String hostUrl) {
         String generatedId;
         do {
-            generatedId = IdGenerator.generateId();
+            generatedId = idGenerator.generateId();
         } while (!repository.findById(generatedId)
                 .equals(Optional.empty()));
 
