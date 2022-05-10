@@ -11,9 +11,10 @@ import javax.validation.constraints.Pattern;
 public class Url {
 
     @NotBlank
-    @Pattern(regexp = "https?:\\/\\/(www\\.[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\/.[a-zA-Z0-9/]*)?)?" +
-            "([a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\.[a-zA-Z0-9()]{2,3})?([a-zA-Z0-9/]*))?", message =
-            "You need to provide a valid url")
+    @Pattern(
+            regexp = "https?:\\/\\/(www\\.[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\/.(\\/[\\w\\W]*)]*)?)" +
+                    "?([a-zA-Z0-9@:%._\\\\+~#=]{1,256}\\.[a-zA-Z0-9()]{2,3}(\\.[a-zA-Z0-9()]{2,3})?((\\/[\\w\\W]*)*))?",
+            message = "You need to provide a valid url")
     private String url;
 
     public Url() {
