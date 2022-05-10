@@ -1,0 +1,15 @@
+micronaut:
+  application:
+    name: url_shortener
+    instance.id:
+      ${random.int[1,99999]}
+  config-client:
+    enabled: true
+
+consul:
+  client:
+    defaultZone: ${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}
+    registration:
+      enabled: true
+    config:
+      format: yaml
