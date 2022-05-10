@@ -3,6 +3,7 @@ package org.darkend.url_shortener.entity;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 public class Url {
 
@@ -14,6 +15,10 @@ public class Url {
     public Url() {
     }
 
+    public Url(String url) {
+        this.url = url;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -21,5 +26,25 @@ public class Url {
     public Url setUrl(String url) {
         this.url = url;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Url{" +
+                "url='" + url + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Url url1 = (Url) o;
+        return Objects.equals(url, url1.url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url);
     }
 }
