@@ -1,83 +1,119 @@
 package org.darkend.url_shortener.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.annotation.Client;
+import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
+import org.assertj.core.api.Assertions;
 import org.darkend.url_shortener.entity.ShortUrl;
 import org.darkend.url_shortener.entity.Url;
+import org.darkend.url_shortener.repository.ShortUrlRepository;
 import org.darkend.url_shortener.service.ShortUrlService;
-import org.darkend.url_shortener.utility.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Clock;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ShortUrlController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@MockBean(JsonConverter.class)
+@MicronautTest
 class ShortUrlControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @Inject
+    @Client("/")
+    HttpClient client;
 
-    @MockBean
+    @Inject
+    ObjectMapper mapper;
+
+    @Inject
     private ShortUrlService service;
 
-    private ShortUrl shortUrl;
+    @Inject
+    private ShortUrlRepository repository;
+
+    private final ShortUrl shortUrl = new ShortUrl("123abc", "http://localhost:8080/s/123abc",
+            "http://localhost:8080/short");
 
     @BeforeEach
     void setUp() {
-        shortUrl = new ShortUrl("123abc", "http:///s/123abc", "http://test.test");
-
-        when(service.createShortUrl(any(Url.class), anyString())).thenReturn(shortUrl);
-        when(service.getShortUrl("123abc")).thenReturn(shortUrl);
         when(service.getAllShortUrls()).thenReturn(List.of(shortUrl));
+        when(service.createShortUrl(new Url("http://localhost.com/short"), "localhost:8080")).thenReturn(shortUrl);
+        when(service.getShortUrl("123abc")).thenReturn(shortUrl);
+        when(service.getShortUrl("1234ab")).thenThrow(EntityNotFoundException.class);
     }
 
     @Test
-    void postShouldCreateNewShortUrl() throws Exception {
-        mvc.perform(post("/short").contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "url": "http://test.com"
-                                }
-                                """))
-                .andExpect(jsonPath("$.id").value(shortUrl.getId()))
-                .andExpect(jsonPath("$.normalUrl").value(shortUrl.getNormalUrl()))
-                .andExpect(jsonPath("$.shortenedUrl").value(shortUrl.getShortenedUrl()))
-                .andExpect(status().isCreated());
+    void getAllShortUrls() throws JsonProcessingException {
+        var response = client.toBlocking()
+                .retrieve(HttpRequest.GET("/short")
+                        .accept(MediaType.APPLICATION_JSON));
+
+        var result = mapper.readValue(response, new TypeReference<List<ShortUrl>>() {
+        });
+
+        assertThat(result).isEqualTo(List.of(shortUrl));
     }
 
     @Test
-    void getAllShouldReturnListOfAllShortUrls() throws Exception {
-        mvc.perform(get("/short").accept(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(shortUrl.getId()))
-                .andExpect(jsonPath("$[0].normalUrl").value(shortUrl.getNormalUrl()))
-                .andExpect(jsonPath("$[0].shortenedUrl").value(shortUrl.getShortenedUrl()))
-                .andExpect(status().isOk());
+    void createWithValidUrlShouldReturnCreatedShortUrl() throws JsonProcessingException {
+        var response = client.toBlocking()
+                .retrieve(HttpRequest.POST("/short", """
+                        {
+                          "url": "http://localhost.com/short"
+                        }
+                        """));
 
+        var result = mapper.readValue(response, ShortUrl.class);
+
+        assertThat(result).isEqualTo(shortUrl);
     }
 
-    @TestConfiguration
-    static class TestConfig {
-
-        @Bean
-        public Clock clock() {
-            return Clock.systemDefaultZone();
-        }
+    @Test
+    void createWithInvalidUrlShouldThrowException() {
+        Assertions.setMaxStackTraceElementsDisplayed(500000);
+        assertThatThrownBy(() -> client.toBlocking()
+                .retrieve(HttpRequest.POST("/short", """
+                        {
+                          "url": "localhost"
+                        }
+                        """)));
     }
+
+    @Test
+    void getWithValidIdShouldNotThrowException() {
+        when(service.getShortUrl("123abc")).thenReturn(new ShortUrl("123abc", "http://localhost:8080/s/123abc",
+                "http://google.com"));
+
+        assertThatNoException().isThrownBy(() -> client.toBlocking()
+                .retrieve(HttpRequest.GET("/s/123abc")));
+    }
+
+    @Test
+    void getWithInvalidIdShouldThrowException() {
+        assertThatThrownBy(() -> client.toBlocking()
+                .retrieve(HttpRequest.GET("/s/1234bc")));
+    }
+
+    @MockBean(ShortUrlService.class)
+    ShortUrlService shortUrlService() {
+        return mock(ShortUrlService.class);
+    }
+
+    @MockBean(ShortUrlRepository.class)
+    ShortUrlRepository shortUrlRepository() {
+        return mock(ShortUrlRepository.class);
+    }
+
 }

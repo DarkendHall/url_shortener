@@ -1,10 +1,10 @@
 package org.darkend.url_shortener.bean;
 
+import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.Factory;
 import org.darkend.url_shortener.utility.IdGenerator;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Factory
 public class IdGeneratorBean {
 
     @Bean

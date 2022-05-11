@@ -1,5 +1,4 @@
 <div align="center">
-<div>
 <h1>URL Shortener</h1> 
 <p>This repository contains code to shorten URLs, it is a part of the final examination of the course "Webservices".<br>
 There are currently three branches which contain three different versions of the application.
@@ -28,25 +27,41 @@ There are currently three branches which contain three different versions of the
 
 </div>
 
+---
+
+<div align="center" style="display: inline-block;">
+    <h2>Micronaut Specifics</h2>
 </div>
 
 <div>
     <h3>Run command:</h3>
 
-<code>docker run --name url_shortener_spring -d -p 8080:8080 -e DB_URL=localhost:3306/db -e HOST_URL=localhost:8080
-ghcr.io/darkendhall/url_shortener:spring-boot</code>
+<code>docker run --name url_shortener_micronaut -d -p 8080:8080 -e DB_URL=localhost:3306/db -e HOST_URL=localhost:8080
+-e CONSUL_HOST=localhost -e CONSUL_PORT=8500 ghcr.io/darkendhall/url_shortener:micronaut</code>
 </div>
 
+### Environment Variables
+
+<div style="display: inline-block;">
+
+| Environment variable | Description                             | Default   |
+|----------------------|-----------------------------------------|-----------|
+| CONSUL_HOST          | The URL/IP address of the Consul server | localhost |
+| CONSUL_PORT          | The port of the Consul server           | 8500      |
+
+</div>
 <div>
-<h3>Spring Boot Specifics:</h3>
 
-To package to a .jar file run the following command if you <b><u>HAVE</u></b> Maven installed on your machine: <code>mvn
--B package</code>
-and then run <code>docker build -t image-name:version .</code>
+<p>
+To package to native image and create a Docker image run the following command if you <u><b>HAVE</b></u> Maven installed
+on your machine: <br> <code>mvn -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml</code>
 
-To package to a .jar file run the following command if you <b><u>DO NOT HAVE</u></b> Maven
-installed on your machine: <code>./mvnw -B package</code> and then run <code>docker build -t image-name:version .</code>
+To package to native image and create a Docker image run the following command if you <u><b>DO NOT HAVE</b></u> Maven
+installed on your machine: <br> <code>./mvnw -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml</code>
+</p>
 
 </div>
+
+
 
 </div>

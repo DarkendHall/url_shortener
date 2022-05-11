@@ -1,11 +1,11 @@
 package org.darkend.url_shortener.bean;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.Factory;
 
 import java.time.Clock;
 
-@Configuration
+@Factory()
 public class ClockBean {
 
     @Bean

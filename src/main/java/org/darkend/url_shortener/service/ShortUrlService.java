@@ -1,18 +1,19 @@
 package org.darkend.url_shortener.service;
 
+import io.micronaut.context.annotation.Bean;
 import org.darkend.url_shortener.entity.ShortUrl;
 import org.darkend.url_shortener.entity.Url;
 import org.darkend.url_shortener.repository.ShortUrlRepository;
 import org.darkend.url_shortener.utility.IdGenerator;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("HttpUrlsUsage")
-@Service
+@Bean
 public class ShortUrlService {
 
     private final ShortUrlRepository repository;
@@ -43,7 +44,10 @@ public class ShortUrlService {
     }
 
     public List<ShortUrl> getAllShortUrls() {
-        return repository.findAll();
+        var iterableResult = repository.findAll();
+        List<ShortUrl> resultList = new ArrayList<>();
+        iterableResult.forEach(resultList::add);
+        return resultList;
     }
 
     public ShortUrl getShortUrl(String id) {

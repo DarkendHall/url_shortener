@@ -1,9 +1,9 @@
-name: Create and publish a Docker image (Spring Boot)
+name: Create and publish a Docker image (Micronaut)
 
 on:
   release:
     branches:
-      - main
+      - micronaut
     types: [ created ]
 
 env:
@@ -29,7 +29,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml
 
       - name: Log in to the Container registry
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
@@ -38,8 +38,8 @@ jobs:
           username: ${{ env.ACTOR }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: docker build -t ghcr.io/darkendhall/url_shortener:spring-boot .
+      - name: Tag Docker image
+        run: docker image tag url_shortener ghcr.io/darkendhall/url_shortener:micronaut
 
       - name: Push Docker image
-        run: docker push ghcr.io/darkendhall/url_shortener:spring-boot
+        run: docker push ghcr.io/darkendhall/url_shortener:micronaut
