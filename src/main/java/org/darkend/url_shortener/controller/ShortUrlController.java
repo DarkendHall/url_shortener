@@ -8,7 +8,7 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import org.darkend.url_shortener.entity.ShortUrl;
 import org.darkend.url_shortener.entity.Url;
-import org.darkend.url_shortener.exception.EnvironmentVariableException;
+import org.darkend.url_shortener.exception.HostUrlException;
 import org.darkend.url_shortener.service.ShortUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +55,6 @@ public class ShortUrlController {
 
     private void checkValidHostUrl() {
         if (this.HOST_URL == null)
-            throw new EnvironmentVariableException("HOST_URL environment variable not set");
+            throw new HostUrlException("HOST_URL environment variable not set");
     }
 }

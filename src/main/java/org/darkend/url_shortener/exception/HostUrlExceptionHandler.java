@@ -10,18 +10,18 @@ import jakarta.inject.Singleton;
 
 @Produces
 @Singleton
-@Requires(classes = {EnvironmentVariableException.class, ExceptionHandler.class})
-public class EnvironmentVariableExceptionHandler implements ExceptionHandler<EnvironmentVariableException,
+@Requires(classes = {HostUrlException.class, ExceptionHandler.class})
+public class HostUrlExceptionHandler implements ExceptionHandler<HostUrlException,
         HttpResponse<?>> {
 
     private final ExceptionMessage exceptionMessage;
 
-    public EnvironmentVariableExceptionHandler(ExceptionMessage exceptionMessage) {
+    public HostUrlExceptionHandler(ExceptionMessage exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
     }
 
     @Override
-    public HttpResponse<?> handle(HttpRequest request, EnvironmentVariableException exception) {
+    public HttpResponse<?> handle(HttpRequest request, HostUrlException exception) {
         return HttpResponse.serverError(
                 exceptionMessage.convert(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
     }
