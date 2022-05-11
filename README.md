@@ -38,11 +38,9 @@ micronaut:
     port: 8080
 datasources:
   default:
-    url: jdbc:mysql://localhost:3307/urls
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: root
-    password: password
-    schema-generate: create
+    url: jdbc:mysql://<database_url>
+    username: <username> # Will be made more secure in the future.
+    password: <password> # Will be made more secure in the future.
     dialect: MYSQL
 jpa.default.properties.hibernate.hbm2ddl.auto: update
 netty:
@@ -52,23 +50,14 @@ netty:
 ```
 
 </div>
-
-<div>
-    <h3>Run command:</h3>
-
-<code>docker run --name url_shortener -d -p 8080:8080 -e CONSUL_HOST=localhost -e CONSUL_PORT=8500
-ghcr.io/darkendhall/url_shortener:micronaut</code>
-</div>
-<div>
-
-<p>
-To package to native image and create a Docker image run the following command if you <u><b>HAVE</b></u> Maven installed
-on your machine: <br> <code>mvn -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml</code>
-
-To package to native image and create a Docker image run the following command if you <u><b>DO NOT HAVE</b></u> Maven
-installed on your machine: <br> <code>./mvnw -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml</code>
-</p>
-
-</div>
+    <div>
+        <p>To package to native image and create a Docker image run the following command if you <u><b>HAVE</b></u> Maven installed on your machine: <br> <code>mvn -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml</code></p>
+        <p>To package to native image and create a Docker image run the following command if you <u><b>DO NOT HAVE</b></u> Maven installed on your machine: <br> <code>./mvnw -B package -Dpackaging=docker-native -Pgraalvm --file pom.xml</code></p>
+        <h4>Run command:</h4>
+        <div>
+            <code>docker run --name url_shortener -d -p 8080:8080 -e CONSUL_HOST=localhost -e CONSUL_PORT=8500
+            ghcr.io/darkendhall/url_shortener:micronaut</code>
+        </div>
+    </div>
 </div>
 </div>
