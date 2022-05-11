@@ -1,44 +1,21 @@
 <div align="center">
 <h1>URL Shortener</h1> 
 <p>This repository contains code to shorten URLs, it is a part of the final examination of the course "Webservices".<br>
-There are currently three branches which contain three different versions of the application.
+There are currently four branches which contain three different versions of the application.
 </p>
 <div style="display: inline-block; text-align: left">
     <ul>
-        <li>The main branch contains a Spring Boot version</li>
-        <li>The quarkus branch contains a Quarkus version(Native image)</li>
-        <li>The micronaut branch contains a Micronaut version(Native Image + Consul Service Discovery)</li>
+        <li>The main branch contains a Micronaut version(Native Image + Consul Service Discovery + Consul Config)</li>
+        <li>The quarkus branch contains a Quarkus version(Native image), development of this version has stopped.</li>
+        <li>The spring-boot branch contains a Spring Boot version, development of this version has stopped.</li>
+        <li>The micronaut branch is no longer active. Development of this version has moved to the main branch, but this branch is kept for documentation</li>
     </ul>
-</div>
-
-
----
-
-<div align="center" style="display: inline-block;">
-
-<h3>Environment variables:</h3>
-
-| Environment variable | Description                                                                            | Default  |
-|----------------------|----------------------------------------------------------------------------------------|----------|
-| DB_URL               | The URL/IP address of the MySQL server<br/> Example: <code>localhost:3306/db</code>    | N/A      |
-| DB_USERNAME          | Username of the database user                                                          | root     |
-| DB_PASSWORD          | Password of the database user                                                          | password |
-| HOST_URL             | The URL of the server(used for location headers)<br> Example: <code>example.com</code> | N/A      |
-
 </div>
 
 ---
 
 <div align="center" style="display: inline-block;">
     <h2>Micronaut Specifics</h2>
-</div>
-
-<div>
-    <h3>Run command:</h3>
-
-<code>docker run --name url_shortener_micronaut -d -p 8080:8080 -e DB_URL=localhost:3306/db -e HOST_URL=localhost:8080
--e CONSUL_HOST=localhost -e CONSUL_PORT=8500 ghcr.io/darkendhall/url_shortener:micronaut</code>
-</div>
 
 ### Environment Variables
 
@@ -49,6 +26,38 @@ There are currently three branches which contain three different versions of the
 | CONSUL_HOST          | The URL/IP address of the Consul server | localhost |
 | CONSUL_PORT          | The port of the Consul server           | 8500      |
 
+</div>
+
+### Example Configuration:
+
+<div align="left">
+
+```yml
+micronaut:
+  server:
+    port: 8080
+datasources:
+  default:
+    url: jdbc:mysql://localhost:3307/urls
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
+    schema-generate: create
+    dialect: MYSQL
+jpa.default.properties.hibernate.hbm2ddl.auto: update
+netty:
+  default:
+    allocator:
+      max-order: 3
+```
+
+</div>
+
+<div>
+    <h3>Run command:</h3>
+
+<code>docker run --name url_shortener -d -p 8080:8080 -e CONSUL_HOST=localhost -e CONSUL_PORT=8500
+ghcr.io/darkendhall/url_shortener:micronaut</code>
 </div>
 <div>
 
@@ -61,7 +70,5 @@ installed on your machine: <br> <code>./mvnw -B package -Dpackaging=docker-nativ
 </p>
 
 </div>
-
-
-
+</div>
 </div>
