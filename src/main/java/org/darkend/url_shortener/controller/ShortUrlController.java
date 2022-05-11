@@ -1,5 +1,7 @@
 package org.darkend.url_shortener.controller;
 
+import io.micronaut.context.annotation.Value;
+import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
@@ -16,24 +18,36 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class ShortUrlController {
 
     private final String HOST_URL;
+    private final boolean IS_HOST_SET;
 
     private final Logger logger = LoggerFactory.getLogger(ShortUrlController.class);
     private final ShortUrlService service;
 
-    public ShortUrlController(ShortUrlService service) {
+    public ShortUrlController(@Value("${host_url:}") String host_url, ShortUrlService service) {
+        this.HOST_URL = host_url;
         this.service = service;
-        this.HOST_URL = System.getenv("HOST_URL");
-        checkValidHostUrl();
+        this.IS_HOST_SET = checkValidHostUrl();
     }
 
     @Post("short")
-    public HttpResponse<ShortUrl> createNewShortUrl(@Body @Valid Url originalUrl) {
-        ShortUrl savedUrl = service.createShortUrl(originalUrl, HOST_URL);
+    public HttpResponse<ShortUrl> createNewShortUrl(@Body @Valid Url originalUrl, HttpHeaders httpHeaders) {
+        String hostUrl = "";
+        if (httpHeaders.get("X-Host") != null && !Objects.equals(httpHeaders.get("X-Host"), ""))
+            hostUrl = httpHeaders.get("X-Host");
+        else if (IS_HOST_SET)
+            hostUrl = HOST_URL;
+        if (Objects.equals(hostUrl, ""))
+            throw new HostUrlException("Unable to find host url, please make sure you're sending it as a X-Host " +
+                    "header or set HOST_URL in the consul config");
+
+        ShortUrl savedUrl = service.createShortUrl(originalUrl, hostUrl);
+
         return HttpResponse.created(savedUrl)
                 .header("Location", savedUrl.getShortenedUrl());
     }
@@ -53,8 +67,12 @@ public class ShortUrlController {
         return HttpResponse.redirect(URI.create(normalUrl));
     }
 
-    private void checkValidHostUrl() {
-        if (this.HOST_URL == null)
-            throw new HostUrlException("HOST_URL environment variable not set");
+    private boolean checkValidHostUrl() {
+        if (this.HOST_URL == null) {
+            logger.warn("host_url not configured properly, expecting it 'X-Host' header with each request");
+            return false;
+        }
+        return true;
     }
+
 }
