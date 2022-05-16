@@ -3,12 +3,13 @@ package org.darkend.url_shortener.entity;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.ReflectiveAccess;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "short_url")
 @Introspected
 @ReflectiveAccess
 public class ShortUrl {
@@ -17,9 +18,11 @@ public class ShortUrl {
     private String id;
 
     @NotBlank
+    @Column(name = "shortened_url")
     private String shortenedUrl;
 
     @NotBlank
+    @Column(name = "normal_url")
     private String normalUrl;
 
     public ShortUrl() {
