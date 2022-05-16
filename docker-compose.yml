@@ -1,10 +1,10 @@
 services:
   service1:
+    image: ghcr.io/darkendhall/url_shortener:latest
     restart: on-failure
     depends_on:
       - db
       - consul
-    image: ghcr.io/darkendhall/url_shortener:latest
     ports:
       - "8080:8080"
     networks:
@@ -19,11 +19,11 @@ services:
       CONSUL_HOST: consul
 
   service2:
+    image: ghcr.io/darkendhall/url_shortener:latest
     restart: on-failure
     depends_on:
       - db
       - consul
-    image: ghcr.io/darkendhall/url_shortener:latest
     ports:
       - "8081:8080"
     networks:
@@ -38,11 +38,11 @@ services:
       CONSUL_HOST: consul
 
   service3:
+    image: ghcr.io/darkendhall/url_shortener:latest
     restart: on-failure
     depends_on:
       - db
       - consul
-    image: ghcr.io/darkendhall/url_shortener:latest
     ports:
       - "8082:8080"
     networks:
@@ -74,6 +74,7 @@ services:
       - "8600:8600"
     networks:
       - url-shortener
+      - consul-network
     environment:
       CONSUL_LOCAL_CONFIG:
         '{
@@ -82,8 +83,58 @@ services:
             "enabled": true
           },
           "node_name": "server-1",
-          "bootstrap_expect": 1
+          "bootstrap_expect": 1,
+          "autopilot": {
+            "cleanup_dead_servers": true,
+            "last_contact_threshold": "200ms",
+            "server_stabilization_time": "10s"
+          },
+          "acl": {
+            "enabled": true,
+            "default_policy": "deny",
+            "enable_token_persistence": true,
+            "tokens": {
+              "initial_management": "0e2bafa8-d534-34ec-5a2a-20239ee6eb8b",
+              "agent": "0e2bafa8-d534-34ec-5a2a-20239ee6eb8b"
+            }
+          }
         }'
+
+  vault:
+    image: vault:1.10.3
+    ports:
+      - "8200:8200"
+    networks:
+      - url-shortener
+      - consul-network
+    command: [ 'server', 'exec vault secrets enable consul',
+               'exec vault write consul/config/access address="consul:8500" token="0e2bafa8-d534-34ec-5a2a-20239ee6eb8b"',
+               'exec vault write consul/roles/my-role consul_roles="api-server"' ]
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_LOCAL_CONFIG:
+        '{
+        	"listener": [{
+         		"tcp": {
+         			"address": "vault:8200",
+         			"tls_disable": 1
+         		}
+         	}],
+         	"storage": {
+         		"consul": {
+         			"address": "consul:8500",
+         			"path": "vault"
+         		}
+         	},
+         	"service_registration": {
+         		"consul": {
+         			"address": "consul:8500"
+         		}
+         	},
+         	"ui":true
+         }'
+      VAULT_ADDR: "http://vault:8200"
 
 volumes:
   mysql-data: { }
@@ -91,3 +142,4 @@ volumes:
 
 networks:
   url-shortener: { }
+  consul-network: { }
