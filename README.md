@@ -39,8 +39,8 @@ micronaut:
 datasources:
   default:
     url: jdbc:mysql://<database_url>
-    username: <username> # Will be made more secure in the future.
-    password: <password> # Will be made more secure in the future.
+    username: <username> # This is stored as clear text, will probably not be updated to be stored as a secret at this time.
+    password: <password> # This is stored as clear text, will probably not be updated to be stored as a secret at this time.
     dialect: MYSQL
 jpa.default.properties.hibernate.hbm2ddl.auto: update
 netty:
