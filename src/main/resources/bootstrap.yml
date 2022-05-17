@@ -13,7 +13,3 @@ consul:
       enabled: true
     config:
       format: yaml
-vault:
-  client:
-    token: ${VAULT_TOKEN:0e2bafa8-d534-34ec-5a2a-20239ee6eb8b}
-    uri: ${VAULT_HOST:localhost}:${VAULT_PORT:8200}
