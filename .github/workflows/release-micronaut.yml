@@ -38,25 +38,11 @@ jobs:
           username: ${{ env.ACTOR }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/darkendhall/url_shortener
-          tags: type=semver,pattern={{version}}
-
-      - name: Tag Docker image(Micronaut-version)
-        run: docker image tag url_shortener ghcr.io/darkendhall/url_shortener:micronaut-${{ steps.meta.output.tags }}
-
       - name: Tag Docker image(Micronaut)
         run: docker image tag url_shortener ghcr.io/darkendhall/url_shortener:micronaut
 
       - name: Tag Docker image(latest)
         run: docker image tag url_shortener ghcr.io/darkendhall/url_shortener:latest
-
-      - name: Push Docker image(Micronaut-version)
-        run: docker push ghcr.io/darkendhall/url_shortener:micronaut-${{ steps.meta.output.tags }}
 
       - name: Push Docker image(Micronaut)
         run: docker push ghcr.io/darkendhall/url_shortener:micronaut
