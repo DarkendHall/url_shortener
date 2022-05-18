@@ -1,16 +1,18 @@
+version: "3.8"
 services:
   service1:
     image: ghcr.io/darkendhall/url_shortener:latest
-    restart: on-failure
+    restart: unless-stopped
     depends_on:
-      - db
       - consul
+      - db
+      - consul-config
     ports:
-      - "8080:8080"
+      - "8081:8080"
     networks:
-      - url-shortener
+      - service-discovery
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/short" ]
+      test: [ "CMD", "curl", "-f", "http://service1:8080/health" ]
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -20,16 +22,17 @@ services:
 
   service2:
     image: ghcr.io/darkendhall/url_shortener:latest
-    restart: on-failure
+    restart: unless-stopped
     depends_on:
-      - db
       - consul
+      - db
+      - consul-config
     ports:
-      - "8081:8080"
+      - "8082:8080"
     networks:
-      - url-shortener
+      - service-discovery
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/short" ]
+      test: [ "CMD", "curl", "-f", "http://service2:8081/health" ]
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -39,16 +42,17 @@ services:
 
   service3:
     image: ghcr.io/darkendhall/url_shortener:latest
-    restart: on-failure
+    restart: unless-stopped
     depends_on:
-      - db
       - consul
+      - db
+      - consul-config
     ports:
-      - "8082:8080"
+      - "8083:8080"
     networks:
-      - url-shortener
+      - service-discovery
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8082/short" ]
+      test: [ "CMD", "curl", "-f", "http://service3:8082/health" ]
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -58,22 +62,27 @@ services:
 
   db:
     image: mysql:8.0.27
+    restart: unless-stopped
     ports:
       - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./init.sql:/data/application/init.sql
+    command: --init-file /data/application/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: password
     networks:
-      - url-shortener
+      - service-discovery
 
   consul:
+    restart: unless-stopped
     image: consul:1.12.0
     ports:
       - "8500:8500"
       - "8600:8600"
     networks:
-      - url-shortener
+      - service-discovery
+      - consul-config
     environment:
       CONSUL_LOCAL_CONFIG:
         '{
@@ -89,21 +98,42 @@ services:
             "last_contact_threshold": "200ms",
             "server_stabilization_time": "10s"
           },
-          "acl": {
-            "enabled": true,
-            "default_policy": "deny",
-            "enable_token_persistence": true,
-            "tokens": {
-              "initial_management": "0e2bafa8-d534-34ec-5a2a-20239ee6eb8b",
-              "agent": "0e2bafa8-d534-34ec-5a2a-20239ee6eb8b"
-            }
-          }
+          "dns_config": {
+                "enable_truncate": true
+              }
         }'
 
+  consul-config:
+    depends_on:
+      - consul
+    image: consul:1.12.0
+    command: "kv import -http-addr=consul:8500 @/url-shortener.json"
+    volumes:
+      - type: bind
+        source: ./consul-config/url-shortener.json
+        target: /url-shortener.json
+    networks:
+      - consul-config
+
+  nginxplus:
+    restart: unless-stopped
+    build: .
+    ports:
+      - "8080:8080"
+      - "80:80"
+    volumes:
+      - nginx:/etc/nginx
+      - type: bind
+        source: ./nginxplus/nginx.conf
+        target: /etc/nginx/conf.d/load-balancer.conf
+    networks:
+      - service-discovery
 
 volumes:
   mysql-data: { }
   consul-data: { }
+  nginx: { }
 
 networks:
-  url-shortener: { }
+  consul-config: { }
+  service-discovery: { }
