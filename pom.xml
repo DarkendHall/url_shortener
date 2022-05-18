@@ -98,6 +98,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-management</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>io.micronaut.sql</groupId>
             <artifactId>micronaut-hibernate-jpa</artifactId>
             <scope>compile</scope>
