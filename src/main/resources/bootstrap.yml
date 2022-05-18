@@ -11,5 +11,9 @@ consul:
     defaultZone: ${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}
     registration:
       enabled: true
+      prefer-ip-address: true
+      check:
+        http: true
     config:
       format: yaml
+    health-check: true
