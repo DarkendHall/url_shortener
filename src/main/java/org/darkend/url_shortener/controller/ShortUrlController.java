@@ -69,7 +69,7 @@ public class ShortUrlController {
 
     private boolean checkValidHostUrl() {
         if (this.HOST_URL == null) {
-            logger.warn("host_url not configured properly, expecting it 'X-Host' header with each request");
+            logger.warn("host_url not set in configuration files, expecting 'X-Host' header with each POST request");
             return false;
         }
         return true;
