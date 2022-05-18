@@ -38,12 +38,12 @@ public class ShortUrlController {
     @Post("short")
     public HttpResponse<ShortUrl> createNewShortUrl(@Body @Valid Url originalUrl, HttpHeaders httpHeaders) {
         String hostUrl = "";
-        if (httpHeaders.get("X-Host") != null && !Objects.equals(httpHeaders.get("X-Host"), ""))
+        if (httpHeaders.get("X-Host") != null && !Objects.equals(httpHeaders.get("Host"), ""))
             hostUrl = httpHeaders.get("X-Host");
         else if (IS_HOST_SET)
             hostUrl = HOST_URL;
         if (Objects.equals(hostUrl, ""))
-            throw new HostUrlException("Unable to find host url, please make sure you're sending it as a X-Host " +
+            throw new HostUrlException("Unable to find host url, please make sure you're sending it as a Host " +
                     "header or set HOST_URL in the consul config");
 
         ShortUrl savedUrl = service.createShortUrl(originalUrl, hostUrl);
