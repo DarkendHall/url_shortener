@@ -133,3 +133,5 @@ build/
 .mvn
 mvnw
 mvnw.cmd
+nginxplus/nginx-repo.crt
+nginxplus/nginx-repo.key
