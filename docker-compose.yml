@@ -129,7 +129,7 @@ services:
 
   nginxplus:
     restart: unless-stopped
-    build: .
+    build: ./nginxplus
     ports:
       - "8080:8080"
       - "80:80"
