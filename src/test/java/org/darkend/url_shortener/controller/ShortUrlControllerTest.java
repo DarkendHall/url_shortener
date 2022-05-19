@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -70,10 +71,11 @@ class ShortUrlControllerTest {
     void createWithValidUrlShouldReturnCreatedShortUrl() throws JsonProcessingException {
         var response = client.toBlocking()
                 .retrieve(HttpRequest.POST("/short", """
-                        {
-                          "url": "http://localhost.com/short"
-                        }
-                        """));
+                                {
+                                  "url": "http://localhost.com/short"
+                                }
+                                """)
+                        .headers(Map.of("Host", "localhost:8080")));
 
         var result = mapper.readValue(response, ShortUrl.class);
 
