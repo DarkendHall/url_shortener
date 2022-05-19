@@ -140,6 +140,26 @@ services:
     networks:
       - service-discovery
 
+  auth:
+    depends_on:
+      - consul
+      - consul-config-auth
+      - rabbit
+    image: ghcr.io/fredrik-philippe-vimbayi/auth-microservice:v1.4.0
+    ports:
+      - "8084:8080"
+    networks:
+      - service-discovery
+      - rabbitmq
+
+  rabbit:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - rabbitmq
+
 volumes:
   mysql-data: { }
   consul-data: { }
@@ -148,3 +168,4 @@ volumes:
 networks:
   consul-config: { }
   service-discovery: { }
+  rabbitmq: { }
