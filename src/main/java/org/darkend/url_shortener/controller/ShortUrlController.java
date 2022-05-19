@@ -38,8 +38,8 @@ public class ShortUrlController {
     @Post("short")
     public HttpResponse<ShortUrl> createNewShortUrl(@Body @Valid Url originalUrl, HttpHeaders httpHeaders) {
         String hostUrl = "";
-        if (httpHeaders.get("X-Host") != null && !Objects.equals(httpHeaders.get("Host"), ""))
-            hostUrl = httpHeaders.get("X-Host");
+        if (httpHeaders.get("Host") != null && !Objects.equals(httpHeaders.get("Host"), ""))
+            hostUrl = httpHeaders.get("Host");
         else if (IS_HOST_SET)
             hostUrl = HOST_URL;
         if (Objects.equals(hostUrl, ""))
