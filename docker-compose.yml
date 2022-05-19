@@ -115,6 +115,18 @@ services:
     networks:
       - consul-config
 
+  consul-config-auth:
+    depends_on:
+      - consul
+    image: consul:1.12.0
+    command: "kv import -http-addr=consul:8500 @/auth.json"
+    volumes:
+      - type: bind
+        source: ./consul-config/auth.json
+        target: /auth.json
+    networks:
+      - consul-config
+
   nginxplus:
     restart: unless-stopped
     build: .
