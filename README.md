@@ -30,6 +30,8 @@ There are currently four branches which contain three different versions of the 
 
 ### Example Configuration:
 
+Should be placed in k/v store in config/url-shortener and in yaml format.
+
 <div align="left">
 
 ```yml
