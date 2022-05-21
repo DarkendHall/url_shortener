@@ -46,7 +46,8 @@ There are currently four branches which contain three different versions of the 
 
 ### Example Configuration:
 
-Should be placed in k/v store in config/url-shortener and in yaml format.
+Should be placed in k/v store in config/url-shortener and in yaml format. <br>
+The reason why it's not url_shortener is because consul doesn't appear to support "_" in the name of services.
 
 <div align="left">
 
