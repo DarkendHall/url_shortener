@@ -13,6 +13,22 @@ There are currently four branches which contain three different versions of the 
 </div>
 
 ---
+<div align="left">
+<h3>Example JSON body</h3>
+
+```json
+{
+  "url": "http://google.com"
+}
+```
+
+<p>The link needs to have http:// or https:// in the beginning, www is optional</p>
+
+</div>
+
+
+
+---
 
 <div align="center" style="display: inline-block;">
     <h2>Micronaut Specifics</h2>
